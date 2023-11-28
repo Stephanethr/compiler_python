@@ -4,8 +4,8 @@ Created on Tue Nov 28 15:02:52 2023
 
 @author: fredt
 """
-from parser.py import Parser
-from lexer.py import tokenize
+from "parser.py" import Parser
+from lexer import tokenize
 
 # Créez une instance du parseur
 parser = Parser()
