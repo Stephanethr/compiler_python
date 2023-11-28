@@ -8,6 +8,7 @@ class MachInterpreter:
     ENDC = '\033[0m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
+    
     def __init__(self):
         self.MEM = []
         self.SP = 0
@@ -184,7 +185,10 @@ if __name__ == "__main__":
         ('LDI', [4]),    # Empile 4
         ('LSS', []),     # Moins que (5 < 4)
         ('PRN', []),     # Imprime le résultat (devrait afficher 0 pour faux)
+        ('STO', []),
         ('HLT', [])      # Halte
     ]
     interpreter.run()
+
+
 
