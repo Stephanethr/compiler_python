@@ -1,3 +1,6 @@
+import re
+
+
 class MachInterpreter:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -155,7 +158,7 @@ class MachInterpreter:
     def do_HLT(self, _):
         self.PC = len(self.PCODE)
 
-if __name__ == "__main__":
+"""if __name__ == "__main__":
     interpreter = MachInterpreter()
     interpreter.PCODE = [
         ('INT', [10]),   # Initialise la pile avec 10 éléments
@@ -188,7 +191,95 @@ if __name__ == "__main__":
         ('STO', []),
         ('HLT', [])      # Halte
     ]
+    interpreter.run()"""
+
+
+# Définition des tokens
+TOKENS = {
+    'INT': r'\bINT\b',
+    'ADD': r'\bADD\b',
+    'SUB': r'\bSUB\b',
+    'MUL': r'\bMUL\b',
+    'DIV': r'\bDIV\b',
+    'LDI': r'\bLDI\b',
+    'LDA': r'\bLDA\b',
+    'LDV': r'\bLDV\b',
+    'STO': r'\bSTO\b',
+    'BRN': r'\bBRN\b',
+    'BZE': r'\bBZE\b',
+    'HLT': r'\bHLT\b',
+    'EQL': r'\bEQL\b',
+    'NEQ': r'\bNEQ\b',
+    'GTR': r'\bGTR\b',
+    'LSS': r'\bLSS\b',
+    'GEQ': r'\bGEQ\b',
+    'LEQ': r'\bLEQ\b',
+    'PRN': r'\bPRN\b',
+    'INN': r'\bINN\b',
+    'NUMBER': r'\b\d+\b',
+    'COMMENT': r'//.*',
+ 
+}
+
+# Fonction pour tokeniser le code source
+def tokenize(code):
+    tokens = []
+    while code:
+        match = None
+        for token_type, token_regex in TOKENS.items():
+            regex = re.compile(token_regex)
+            match = regex.match(code)
+            if match:
+                tokens.append((token_type, match.group()))
+                break
+        if not match:
+            raise SyntaxError(f"Syntaxe incorrecte : {code}")
+        code = code[code.index(match.group()) + len(match.group()):].lstrip()
+    return tokens
+
+# Fonction pour lire le code source
+def read_source_code():
+    print("Entrez votre code L3Lang (tapez 'END' pour terminer) :")
+    code = ""
+    while True:
+        line = input()
+        if line == "END":
+            break
+        code += line + '\n'
+    return code
+
+# Fonction pour convertir les tokens en PCode
+def convert_to_pcode(tokens):
+    pcode = []
+    i = 0
+    while i < len(tokens):
+        token_type, token_val = tokens[i]
+        if token_type == 'NUMBER':
+            pcode.append(('LDI', [int(token_val)]))
+        elif token_type in ['INT', 'LDA', 'BRN', 'BZE']:
+            # Vérifiez si le token suivant est un nombre pour l'utiliser comme argument
+            if i + 1 < len(tokens) and tokens[i + 1][0] == 'NUMBER':
+                pcode.append((token_type, [int(tokens[i + 1][1])]))
+                i += 1  # Incrémentez l'indice pour passer le token du nombre
+            else:
+                raise SyntaxError(f"Argument manquant pour l'instruction {token_type}")
+        else:
+            pcode.append((token_type, []))
+        i += 1
+    return pcode
+
+
+
+
+def main():
+    code = read_source_code()
+    tokens = tokenize(code)
+    pcode = convert_to_pcode(tokens)
+
+    interpreter = MachInterpreter()
+    interpreter.PCODE = pcode
     interpreter.run()
 
-
+if __name__ == "__main__":
+    main()
 
