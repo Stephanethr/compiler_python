@@ -122,35 +122,31 @@ class MachInterpreter:
         self.SP -= 1
 
     def do_INT(self, args):
+        if not args or len(args) != 1:
+            raise ValueError("Argument manquant ou incorrect pour INT")
         c = args[0]
-        self.MEM.extend([0] * c)  # Ajoute c zéros à la pile
+        self.MEM.extend([0] * c)
         self.SP = len(self.MEM) - 1
 
-    def do_LDI(self, args):
-        print(f"{self.FAIL}DEBUG - Avant LDI: SP = {self.SP}, MEM = {self.MEM}{self.ENDC}")
-        self.SP += 1
-        self.MEM.append(args[0])
-        print(f"{self.FAIL}DEBUG - Après LDI: SP = {self.SP}, MEM = {self.MEM}{self.ENDC}")
-
-
     def do_LDA(self, args):
+        if not args or len(args) != 1:
+            raise ValueError("Argument manquant ou incorrect pour LDA")
         self.SP += 1
-        self.MEM.append(args[0])
+        self.MEM.append(self.MEM[args[0]])
 
     def do_LDV(self, _):
+        if self.SP < 0:
+            raise ValueError("Pile vide, impossible de charger la valeur")
         self.MEM[self.SP] = self.MEM[self.MEM[self.SP]]
 
-    def do_STO(self, _):
-        self.MEM[self.MEM[self.SP-1]] = self.MEM[self.SP]
-        self.SP -= 2
-
     def do_BRN(self, args):
-        print(f"{self.HEADER}DEBUGDEBUG - Avant BRN: PC = {self.PC}, SP = {self.SP}, MEM = {self.MEM}{self.ENDC}")
+        if not args or len(args) != 1:
+            raise ValueError("Argument manquant ou incorrect pour BRN")
         self.PC = args[0]
-        print(f"{self.HEADER}DEBUG - Après BRN: PC = {self.PC}, SP = {self.SP}, MEM = {self.MEM}{self.ENDC}")
-
 
     def do_BZE(self, args):
+        if not args or len(args) != 1:
+            raise ValueError("Argument manquant ou incorrect pour BZE")
         if self.MEM[self.SP] == 0:
             self.PC = args[0]
         self.SP -= 1
@@ -254,19 +250,20 @@ def convert_to_pcode(tokens):
     i = 0
     while i < len(tokens):
         token_type, token_val = tokens[i]
-        if token_type == 'NUMBER':
-            pcode.append(('LDI', [int(token_val)]))
-        elif token_type in ['INT', 'LDA', 'BRN', 'BZE']:
-            # Vérifiez si le token suivant est un nombre pour l'utiliser comme argument
+        if token_type in ['INT', 'LDA', 'BRN', 'BZE', 'LDI']: # Ajoutez 'LDI' ici
             if i + 1 < len(tokens) and tokens[i + 1][0] == 'NUMBER':
                 pcode.append((token_type, [int(tokens[i + 1][1])]))
-                i += 1  # Incrémentez l'indice pour passer le token du nombre
+                i += 1  # Incrémentez pour passer le token du nombre
             else:
                 raise SyntaxError(f"Argument manquant pour l'instruction {token_type}")
+        elif token_type == 'NUMBER':
+            # Gérez ici si vous avez une instruction spécifique pour les nombres seuls
+            pass
         else:
             pcode.append((token_type, []))
         i += 1
     return pcode
+
 
 
 
