@@ -157,8 +157,8 @@ class MachInterpreter:
 
     def do_HLT(self, _):
         self.PC = len(self.PCODE)
-
-"""if __name__ == "__main__":
+"""
+if __name__ == "__main__":
     interpreter = MachInterpreter()
     interpreter.PCODE = [
         ('INT', [10]),   # Initialise la pile avec 10 éléments
@@ -191,8 +191,8 @@ class MachInterpreter:
         ('STO', []),
         ('HLT', [])      # Halte
     ]
-    interpreter.run()"""
-
+    interpreter.run()
+"""
 
 # Définition des tokens
 TOKENS = {
