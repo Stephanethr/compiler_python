@@ -2,6 +2,8 @@ import re
 
 
 class MachInterpreter:
+
+    # Définition des couleurs pour le terminal
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
     OKCYAN = '\033[96m'
@@ -12,6 +14,7 @@ class MachInterpreter:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
     
+    # Définition des instructions
     def __init__(self):
         self.MEM = []
         self.SP = 0
@@ -56,7 +59,7 @@ class MachInterpreter:
             return
         print("Dernier élément de la pile : {0}".format(self.MEM[-1]))
         print("Avant dernier élément de la pile : {0}" .format(self.MEM[self.SP]))
-        self.MEM[self.SP] -= self.MEM[self.SP - 1]
+        self.MEM[self.SP - 1] -= self.MEM[self.SP]
         self.MEM.pop()
         self.SP -= 1
         print(f"{self.OKCYAN}DEBUG - Après SUB: SP = {self.SP}, MEM = {self.MEM}{self.ENDC}")
@@ -115,7 +118,6 @@ class MachInterpreter:
             print("Erreur : pile vide, rien à imprimer")
             return
         print(self.MEM[self.SP])
-        self.SP -= 1
 
     def do_INN(self, _):
         self.MEM[self.MEM[self.SP]] = int(input())
@@ -134,8 +136,6 @@ class MachInterpreter:
         value = args[0]
         self.MEM.append(value)
         self.SP += 1
-
-
 
     def do_LDA(self, args):
         if not args or len(args) != 1:
@@ -162,41 +162,6 @@ class MachInterpreter:
 
     def do_HLT(self, _):
         self.PC = len(self.PCODE)
-
-"""if __name__ == "__main__":
-    interpreter = MachInterpreter()
-    interpreter.PCODE = [
-        ('INT', [10]),   # Initialise la pile avec 10 éléments
-        ('LDI', [5]),    # Empile 5
-        ('LDI', [3]),    # Empile 3
-        ('ADD', []),     # Additionne (5 + 3)
-        ('PRN', []),     # Imprime le résultat de l'addition (devrait afficher 8)
-        ('LDI', [2]),    # Empile 2
-        ('SUB', []),     # Soustrait (8 - 2)
-        ('PRN', []),     # Imprime le résultat de la soustraction (devrait afficher 6)
-        ('LDI', [3]),    # Empile 3
-        ('MUL', []),     # Multiplie (6 * 3)
-        ('PRN', []),     # Imprime le résultat de la multiplication (devrait afficher 18)
-        ('LDI', [2]),    # Empile 2
-        ('DIV', []),     # Divise (18 / 2)
-        ('PRN', []),     # Imprime le résultat de la division (devrait afficher 9)
-        ('LDI', [9]),    # Empile 9
-        ('EQL', []),     # Égalité (9 == 9)
-        ('PRN', []),     # Imprime le résultat de l'égalité (devrait afficher 1 pour vrai)
-        ('LDI', [1]),    # Empile 1
-        ('LDI', [1]),    # Empile 1
-        ('NEQ', []),     # Non égalité (1 != 1)
-        ('PRN', []),     # Imprime le résultat de la non égalité (devrait afficher 0 pour faux)
-        ('LDI', [5]),    # Empile 5
-        ('GTR', []),     # Plus grand que (1 > 5)
-        ('PRN', []),     # Imprime le résultat (devrait afficher 0 pour faux)
-        ('LDI', [4]),    # Empile 4
-        ('LSS', []),     # Moins que (5 < 4)
-        ('PRN', []),     # Imprime le résultat (devrait afficher 0 pour faux)
-        ('STO', []),
-        ('HLT', [])      # Halte
-    ]
-    interpreter.run()"""
 
 
 # Définition des tokens
@@ -284,3 +249,41 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+"""
+if __name__ == "__main__":
+    interpreter = MachInterpreter()
+    interpreter.PCODE = [
+        ('INT', [10]),   # Initialise la pile avec 10 éléments
+        ('LDI', [5]),    # Empile 5
+        ('LDI', [3]),    # Empile 3
+        ('ADD', []),     # Additionne (5 + 3)
+        ('PRN', []),     # Imprime le résultat de l'addition (devrait afficher 8)
+        ('LDI', [2]),    # Empile 2
+        ('SUB', []),     # Soustrait (8 - 2)
+        ('PRN', []),     # Imprime le résultat de la soustraction (devrait afficher 6)
+        ('LDI', [3]),    # Empile 3
+        ('MUL', []),     # Multiplie (6 * 3)
+        ('PRN', []),     # Imprime le résultat de la multiplication (devrait afficher 18)
+        ('LDI', [2]),    # Empile 2
+        ('DIV', []),     # Divise (18 / 2)
+        ('PRN', []),     # Imprime le résultat de la division (devrait afficher 9)
+        ('LDI', [9]),    # Empile 9
+        ('EQL', []),     # Égalité (9 == 9)
+        ('PRN', []),     # Imprime le résultat de l'égalité (devrait afficher 1 pour vrai)
+        ('LDI', [1]),    # Empile 1
+        ('LDI', [1]),    # Empile 1
+        ('NEQ', []),     # Non égalité (1 != 1)
+        ('PRN', []),     # Imprime le résultat de la non égalité (devrait afficher 0 pour faux)
+        ('LDI', [5]),    # Empile 5
+        ('GTR', []),     # Plus grand que (1 > 5)
+        ('PRN', []),     # Imprime le résultat (devrait afficher 0 pour faux)
+        ('LDI', [4]),    # Empile 4
+        ('LSS', []),     # Moins que (5 < 4)
+        ('PRN', []),     # Imprime le résultat (devrait afficher 0 pour faux)
+        ('STO', []),
+        ('HLT', [])      # Halte
+    ]
+    interpreter.run()
+"""
