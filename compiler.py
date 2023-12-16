@@ -121,7 +121,7 @@ class MachInterpreter:
 
     def do_INN(self, _):
         self.MEM[self.MEM[self.SP]] = int(input())
-        self.SP -= 1
+        self.SP -= 1    
 
     def do_INT(self, args):
         if not args or len(args) != 1:
@@ -174,7 +174,6 @@ TOKENS = {
     'LDI': r'\bLDI\b',
     'LDA': r'\bLDA\b',
     'LDV': r'\bLDV\b',
-    'STO': r'\bSTO\b',
     'BRN': r'\bBRN\b',
     'BZE': r'\bBZE\b',
     'HLT': r'\bHLT\b',
@@ -186,8 +185,6 @@ TOKENS = {
     'LEQ': r'\bLEQ\b',
     'PRN': r'\bPRN\b',
     'INN': r'\bINN\b',
-    'NUMBER': r'\b\d+\b',
-    'COMMENT': r'//.*',
  
 }
 
@@ -282,7 +279,6 @@ if __name__ == "__main__":
         ('LDI', [4]),    # Empile 4
         ('LSS', []),     # Moins que (5 < 4)
         ('PRN', []),     # Imprime le résultat (devrait afficher 0 pour faux)
-        ('STO', []),
         ('HLT', [])      # Halte
     ]
     interpreter.run()
