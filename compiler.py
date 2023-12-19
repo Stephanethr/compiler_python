@@ -185,6 +185,8 @@ TOKENS = {
     'LEQ': r'\bLEQ\b',
     'PRN': r'\bPRN\b',
     'INN': r'\bINN\b',
+    'NUMBER': r'\b\d+\b',
+    'COMMENT': r'//.*',
  
 }
 
@@ -234,6 +236,7 @@ def convert_to_pcode(tokens):
             pcode.append((token_type, []))
         i += 1
     return pcode
+
 
 def main():
     code = read_source_code()
